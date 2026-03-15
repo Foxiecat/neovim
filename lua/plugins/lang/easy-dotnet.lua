@@ -1,3 +1,26 @@
+local function find_latest_analyzer(package_name, dll_name)
+  local base = vim.fn.expand("~/.nuget/packages/" .. package_name .. "/")
+  local handle = io.popen("ls -v " .. base .. " 2>/dev/null | tail -n 1")
+  if not handle then
+    return nil
+  end
+  local latest = handle:read("*l")
+  handle:close()
+  if not latest or latest == "" then
+    return nil
+  end
+  return base .. latest .. "/analyzers/" .. dll_name
+end
+
+--#region custom analyzer dlls
+local analyzers = {}
+
+local sonar = find_latest_analyzer("sonaranalyzer.csharp", "SonarAnalyzer.CSharp.dll")
+if sonar then
+  table.insert(analyzers, sonar)
+end
+--#endregion
+
 return {
   -- lazy.nvim
   {
@@ -18,9 +41,7 @@ return {
           roslynator_enabled = true, -- Automatically enable roslynator analyzer
           easy_dotnet_analyzer_enabled = true, -- Enable roslyn analyzer from easy-dotnet-server
           auto_refresh_codelens = true,
-          analyzer_assemblies = { -- Any additional roslyn analyzers you might use like SonarAnalyzer.CSharp
-            "/home/foxiecat/GlobalNuGetPackages/SonarAnalyzer.CSharp.10.20.0.135146/analyzers/SonarAnalyzer.CSharp.dll",
-          },
+          analyzer_assemblies = analyzers, -- Any additional roslyn analyzers you might use like SonarAnalyzer.CSharp
           config = {},
         },
         debugger = {
