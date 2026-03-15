@@ -165,6 +165,7 @@ return {
       opts.sections = {
         lualine_a = { "mode", job_indicator },
       }
+      return opts
     end,
   },
   {
@@ -183,7 +184,7 @@ return {
   },
   {
     "folke/snacks.nvim",
-    ---@type snacks.Config
+    ---@type snacks.config
     opts = {
       picker = {
         sources = {
