@@ -54,10 +54,6 @@ keymap("i", "jj", "<ESC>", opts)
 keymap("v", "<", "<gv", opts)
 keymap("v", ">", ">gv", opts)
 
--- Comment
-keymap("n", "<leader>7", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", opts)
-keymap("x", "<leader>7", '<ESC><CMD>lua require("Comment.api").toggle.linewise(vim.fn.visualmode())<CR>')
-
 -- Custom
 keymap("n", "<leader>p", "<cmd> PasteImage <CR>", opts)
 keymap("n", "S", "<cmd> %s//g", opts)
