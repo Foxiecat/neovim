@@ -2,7 +2,7 @@ return {
   "nvim-lualine/lualine.nvim",
   opts = {
     options = {
-      theme = "rose-pine",
+      theme = "base16",
     },
     sections = {
       lualine_a = { "mode", require("easy-dotnet.ui-modules.jobs").lualine },

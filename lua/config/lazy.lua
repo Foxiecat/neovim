@@ -25,9 +25,9 @@ require("lazy").setup({
     {
       import = "plugins",
     },
-    -- { import = "plugins.coding" },
+    { import = "plugins.coding" },
     { import = "plugins.colorscheme" },
-    -- { import = "plugins.editor" },
+    { import = "plugins.editor" },
     { import = "plugins.formatting" },
     { import = "plugins.lang" },
     -- { import = "plugins.lsp" },

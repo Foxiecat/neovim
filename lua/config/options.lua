@@ -23,8 +23,6 @@ vim.opt.breakindent = true
 vim.opt.cindent = true
 
 vim.opt.expandtab = true
-vim.opt.shiftwidth = 4
-vim.tabstop = 4
 vim.opt.smartindent = true
 
 vim.opt.showtabline = 0

@@ -1,4 +1,4 @@
-local function find_latest_analyzer(package_name, dll_name)
+local function find_latest_version(package_name, dll_name)
   local base = vim.fn.expand("~/.nuget/packages/" .. package_name .. "/")
   local handle = io.popen("ls -v " .. base .. " 2>/dev/null | tail -n 1")
   if not handle then
@@ -12,15 +12,6 @@ local function find_latest_analyzer(package_name, dll_name)
   return base .. latest .. "/analyzers/" .. dll_name
 end
 
---#region custom analyzer dlls
-local analyzers = {}
-
-local sonar = find_latest_analyzer("sonaranalyzer.csharp", "SonarAnalyzer.CSharp.dll")
-if sonar then
-  table.insert(analyzers, sonar)
-end
---#endregion
-
 return {
   -- lazy.nvim
   {
@@ -31,24 +22,30 @@ return {
     dependencies = { "nvim-lua/plenary.nvim", "mfussenegger/nvim-dap", "folke/snacks.nvim" },
     config = function()
       local dotnet = require("easy-dotnet")
+      local linux_term = {
+        command = "wezterm",
+        args = { "start" },
+      }
       -- Options are not required
       dotnet.setup({
         -- Optional configuration for external terminals (matches nvim-dap structure)
-        external_terminal = nil,
+        external_terminal = linux_term,
         lsp = {
           enabled = true, -- Enable builtin roslyn lsp
           preload_roslyn = true, -- Start loading roslyn before any buffer is opened
           roslynator_enabled = true, -- Automatically enable roslynator analyzer
           easy_dotnet_analyzer_enabled = true, -- Enable roslyn analyzer from easy-dotnet-server
           auto_refresh_codelens = true,
-          analyzer_assemblies = analyzers, -- Any additional roslyn analyzers you might use like SonarAnalyzer.CSharp
+          analyzer_assemblies = { -- Any additional roslyn analyzers you might use like SonarAnalyzer.CSharp
+            find_latest_version("sonaranalyzer.csharp", "SonarAnalyzer.CSharp.dll"),
+          },
           config = {},
         },
         debugger = {
           -- Path to custom coreclr DAP adapter
           -- easy-dotnet-server falls back to its own netcoredbg binary if bin_path is nil
           bin_path = nil,
-          console = "integratedTerminal", -- Controls where the target app runs: "integratedTerminal" (Neovim buffer) or "externalTerminal" (OS window)
+          console = "externalTerminal", -- Controls where the target app runs: "integratedTerminal" (Neovim buffer) or "externalTerminal" (OS window)
           apply_value_converters = true,
           auto_register_dap = true,
           mappings = {
@@ -142,7 +139,7 @@ return {
         },
         server = {
           ---@type nil | "Off" | "Critical" | "Error" | "Warning" | "Information" | "Verbose" | "All"
-          log_level = nil,
+          log_level = "All",
         },
         -- choose which picker to use with the plugin
         -- possible values are "telescope" | "fzf" | "snacks" | "basic"
@@ -190,8 +187,23 @@ return {
     end,
   },
   {
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      ensure_installed = {
+        "c_sharp",
+        "fsharp",
+      },
+    },
+  },
+  {
     "mason-org/mason.nvim",
-    opts = { ensure_installed = { "csharpier", "netcoredbg" } },
+    opts = {
+      ensure_installed = {
+        "csharpier",
+        "fantomas",
+        "netcoredbg",
+      },
+    },
   },
   {
     "nvimtools/none-ls.nvim",
