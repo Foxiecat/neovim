@@ -1,3 +1,5 @@
+local dotnet = require("easy-dotnet")
+
 return {
   "nvim-lualine/lualine.nvim",
   opts = {
@@ -5,7 +7,14 @@ return {
       theme = "base16",
     },
     sections = {
-      lualine_a = { "mode", require("easy-dotnet.ui-modules.jobs").lualine },
+      lualine_x = {
+        dotnet.lualine.jobs,
+        {
+          dotnet.lualine.run_status,
+          color    = dotnet.lualine.run_status_color,
+          on_click = dotnet.lualine.run_status_click,
+        },
+      },
     },
   },
 }

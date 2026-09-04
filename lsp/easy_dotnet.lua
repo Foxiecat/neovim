@@ -1,5 +1,12 @@
 ---@type vim.lsp.Config
 return {
+  capabilities = {
+    workspace = {
+      didChangeWatchedFiles = {
+        dynamicRegistration = true,
+      }
+    }
+  },
   settings = {
     ["csharp|code_lens"] = {
       dotnet_enable_references_code_lens = true,
